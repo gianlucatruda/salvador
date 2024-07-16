@@ -70,7 +70,7 @@
 			<label for="modelSelector">Model</label>
 			<select
 				name="modelSelector"
-				id="modelSelect"
+				id="modelSelector"
 				bind:value={modelName}
 				disabled={uiDisabled}
 			>
@@ -89,7 +89,7 @@
 				<label for="sizeSelectorD2">Image Size</label>
 				<select
 					name="sizeSelectorD2"
-					id="sizeSelect"
+					id="sizeSelectorD2"
 					bind:value={imgSize}
 					disabled={uiDisabled}
 				>
@@ -107,7 +107,7 @@
 				<label for="sizeSelectorD3">Image Size</label>
 				<select
 					name="sizeSelectorD3"
-					id="sizeSelect"
+					id="sizeSelectorD3"
 					bind:value={imgSize}
 					disabled={uiDisabled}
 				>
@@ -132,22 +132,22 @@
 			bind:value={promptText}
 			disabled={uiDisabled}
 		></textarea>
-		{#if lastPrompt && !promptText}
-			<button
-				class="loadPrevButton"
-				on:click={loadPreviousPrompt}
-				disabled={promptText == lastPrompt}>Load previous prompt</button
-			>
-		{:else if !imgURL}
-			<button
-				class="clearPromptButton"
-				on:click={() => {
-					promptText = "";
-				}}
-				disabled={!promptText || uiDisabled}>Clear prompt</button
-			>
-		{/if}
 	</div>
+	{#if lastPrompt && !promptText}
+		<button
+			class="loadPrevButton"
+			on:click={loadPreviousPrompt}
+			disabled={promptText == lastPrompt}>Load previous prompt</button
+		>
+	{:else if !imgURL}
+		<button
+			class="clearPromptButton"
+			on:click={() => {
+				promptText = "";
+			}}
+			disabled={!promptText || uiDisabled}>Clear prompt</button
+		>
+	{/if}
 	{#if !imgURL}
 		<button on:click={makeImage} disabled={uiDisabled || !promptText}
 			>{btnText}</button
