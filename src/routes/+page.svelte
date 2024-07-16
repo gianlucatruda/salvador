@@ -117,9 +117,11 @@
 			disabled={uiDisabled}
 		></textarea>
 	</div>
-	<button on:click={makeImage} disabled={uiDisabled || promptText == ""}
-		>{btnText}</button
-	>
+	{#if !imgURL}
+		<button on:click={makeImage} disabled={uiDisabled || promptText == ""}
+			>{btnText}</button
+		>
+	{/if}
 	<div class="results">
 		{#if imgURL !== ""}
 			<img src={imgURL} alt="Generated AI artwork" />
@@ -134,6 +136,12 @@
 	</div>
 	{#if uiDisabled}
 		<p>Query: {`${modelName} (${imgSize}): "${promptText}"`}</p>
+	{/if}
+
+	{#if imgURL}
+		<button class="resetButton" on:click={() => location.reload()}
+			>Reset Everything</button
+		>
 	{/if}
 
 	<footer>
@@ -192,6 +200,9 @@
 		border-radius: 10px;
 		width: 90%;
 		margin: 10px 0;
+	}
+	.resetButton {
+		background-color: orange;
 	}
 
 	textarea {
