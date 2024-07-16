@@ -14,7 +14,7 @@
 		const query = `${modelName} (${imgSize}): "${promptText}"`;
 		console.log("Query:", query);
 		uiDisabled = true;
-		btnText = "Painting...";
+		btnText = "Generating...";
 		makeRequest();
 	};
 
@@ -122,9 +122,14 @@
 	>
 	<div class="results">
 		{#if imgURL !== ""}
-			<img src={imgURL} alt="result" />
-			<p>On your phone, tap and hold the image > <b>Save to Photos</b>. On your computer, right click the image > <b>Save Image As...</b>.
-
+			<img src={imgURL} alt="Generated AI artwork" />
+			<p>
+				On your phone, tap and hold the image > <b>Save to Photos</b>.
+				On your computer, right click the image >
+				<b>Save Image As...</b>.
+			</p>
+		{:else if uiDisabled}
+			<div class="spinner"></div>
 		{/if}
 	</div>
 	{#if uiDisabled}
@@ -218,5 +223,28 @@
 		max-width: 500px;
 		height: auto;
 		border-radius: 10px;
+	}
+
+	@keyframes spinner {
+		to {
+			transform: rotate(360deg);
+		}
+	}
+	.spinner {
+		height: 40px;
+	}
+
+	.spinner:before {
+		content: "";
+		box-sizing: border-box;
+		position: absolute;
+		width: 30px;
+		height: 30px;
+		margin-top: 5px;
+		margin-left: -15px;
+		border-radius: 50%;
+		border: 4px solid #ccc;
+		border-top-color: #000;
+		animation: spinner 0.5s linear infinite;
 	}
 </style>
