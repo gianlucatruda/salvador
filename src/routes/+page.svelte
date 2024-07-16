@@ -1,24 +1,26 @@
 <script lang="ts">
 	let btnText = "Generate Image";
 	let promptText = "A melting clock in the style of Dali.";
-	let btnDisabled = false;
+	let modelName = "dall-e-2";
+	let imgSize: string;
+	let uiDisabled = false;
 	let imgURL = "";
 
 	const makeImage = () => {
 		console.log("Querying:", promptText);
-		btnDisabled = true;
+		uiDisabled = true;
 		btnText = "Painting...";
-		makeRequest(promptText);
+		makeRequest();
 	};
 
-	async function makeRequest(p: string) {
+	async function makeRequest() {
 		const bodyData = {
-			model: "dall-e-2",
-			// model: "dall-e-3",
-			prompt: p,
+			model: modelName,
+			prompt: promptText,
 			n: 1,
-			size: "256x256",
-			// size: "1024x1024"
+			size: imgSize,
+			// TODO quality (for Dalle3)
+			// TODO style (for Dalle3)
 		};
 		const response = await fetch("/api/generate", {
 			method: "POST",
@@ -37,21 +39,87 @@
 <main>
 	<h1>Salvador</h1>
 	<p>
-		A custom frontend for <a href="https://openai.com/index/dall-e-3/"
-			>OpenAI's DALLE 3</a
-		>
+		A bespoke interface to <a href="https://openai.com/index/dall-e-3/"
+			>OpenAI's DALL.E</a
+		>.
 	</p>
 	<div class="modelParams">
-		<label for="prompt">Prompt</label>
-		<textarea id="prompt" rows="3" cols="40" wrap="soft" bind:value={promptText}
+		<textarea
+			id="prompt"
+			rows="3"
+			cols="40"
+			wrap="soft"
+			maxlength="999"
+			bind:value={promptText}
+			disabled={uiDisabled}
 		></textarea>
-		<button on:click={makeImage} disabled={btnDisabled}>{btnText}</button>
+		<form>
+			<label for="modelSelector">Model:</label>
+			<select
+				name="modelSelector"
+				id="modelSelect"
+				bind:value={modelName}
+				disabled={uiDisabled}
+			>
+				<optgroup label="Older, cheaper, wackier">
+					<option value="dall-e-2">DALL.E 2</option>
+				</optgroup>
+				<optgroup label="Newer, higher-res, slower">
+					<option value="dall-e-3">DALL.E 3</option>
+				</optgroup>
+			</select>
+		</form>
+		{#if modelName == "dall-e-2"}
+			<form>
+				<label for="sizeSelectorD2">Image Size:</label>
+				<select
+					name="sizeSelectorD2"
+					id="sizeSelect"
+					bind:value={imgSize}
+					disabled={uiDisabled}
+				>
+					<option value="256x256">256 x 256 (fast and cheap)</option>
+					<option value="512x512">512 x 512</option>
+					<option value="1024x1024"
+						>1024 x 1024 (slow and pricey)</option
+					>
+				</select>
+			</form>
+		{:else if modelName == "dall-e-3"}
+			<form>
+				<label for="sizeSelectorD3">Image Size:</label>
+				<select
+					name="sizeSelectorD3"
+					id="sizeSelect"
+					bind:value={imgSize}
+					disabled={uiDisabled}
+				>
+					<option value="1024x1024" selected={modelName == "dall-e-3"}
+						>1024 x 1024</option
+					>
+					<option value="1792x1024">1792 x 1024 (landscape)</option>
+					<option value="1024x1792">1024 x 1792 (portrait)</option>
+				</select>
+			</form>
+		{:else}
+			<p>This should never happen...</p>
+		{/if}
 	</div>
+	<button on:click={makeImage} disabled={uiDisabled}>{btnText}</button>
 	<div class="results">
 		{#if imgURL !== ""}
 			<img src={imgURL} alt="result" />
 		{/if}
 	</div>
+	<p>Prompt: {promptText}</p>
+	<p>Model: {modelName}</p>
+	<p>Size: {imgSize}</p>
+	<footer>
+		<p>
+			Made with <a href="https://kit.svelte.dev/">Svelte</a> and love by
+			<a href="https://gianluca.ai">Gianluca Truda</a>.
+		</p>
+	</footer>
 </main>
 
 <style>
