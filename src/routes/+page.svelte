@@ -47,8 +47,20 @@
 			body: JSON.stringify(bodyData),
 		});
 
+		if (!response.ok) {
+			console.warn(response.status, response.statusText);
+		}
+
 		const result = await response.json();
 		console.log(result);
+		if (result.error) {
+			console.error(result.error);
+			alert(JSON.stringify(result.error));
+			location.reload();
+
+			btnText = "ERROR";
+		}
+
 		imgURL = result.data[0].url;
 	}
 </script>
