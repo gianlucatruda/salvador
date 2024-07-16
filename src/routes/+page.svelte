@@ -1,13 +1,18 @@
 <script lang="ts">
 	let btnText = "Generate Image";
-	let promptText = "A melting clock in the style of Dali.";
+	let promptText = "";
 	let modelName = "dall-e-2";
-	let imgSize: string;
+	let imgSize = "256x256";
 	let uiDisabled = false;
 	let imgURL = "";
 
 	const makeImage = () => {
-		console.log("Querying:", promptText);
+		if (promptText == "") {
+			alert("You need to enter a prompt");
+			return;
+		}
+		const query = `${modelName} (${imgSize}): "${promptText}"`;
+		console.log("Query:", query);
 		uiDisabled = true;
 		btnText = "Painting...";
 		makeRequest();
@@ -50,6 +55,8 @@
 			cols="40"
 			wrap="soft"
 			maxlength="999"
+			minlength="10"
+			placeholder="A painting of a melting clock in the style of Dali..."
 			bind:value={promptText}
 			disabled={uiDisabled}
 		></textarea>
@@ -105,15 +112,15 @@
 			<p>This should never happen...</p>
 		{/if}
 	</div>
-	<button on:click={makeImage} disabled={uiDisabled}>{btnText}</button>
+	<button on:click={makeImage} disabled={uiDisabled || promptText == ""}
+		>{btnText}</button
+	>
 	<div class="results">
 		{#if imgURL !== ""}
 			<img src={imgURL} alt="result" />
 		{/if}
 	</div>
-	<p>Prompt: {promptText}</p>
-	<p>Model: {modelName}</p>
-	<p>Size: {imgSize}</p>
+	<p>Query: {`${modelName} (${imgSize}): "${promptText}"`}</p>
 	<footer>
 		<p>
 			Made with <a href="https://kit.svelte.dev/">Svelte</a> and love by
