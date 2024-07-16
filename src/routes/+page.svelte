@@ -7,10 +7,6 @@
 	let imgURL = "";
 
 	const makeImage = () => {
-		if (promptText == "") {
-			alert("You need to enter a prompt");
-			return;
-		}
 		const query = `${modelName} (${imgSize}): "${promptText}"`;
 		console.log("Query:", query);
 		uiDisabled = true;
@@ -66,7 +62,9 @@
 					<option value="dall-e-2">DALL.E 2</option>
 				</optgroup>
 				<optgroup label="Newer, higher-res, slower">
-					<option value="dall-e-3">DALL.E 3</option>
+					<option value="dall-e-3" disabled={true}
+						>DALL.E 3 (coming soon!)</option
+					>
 				</optgroup>
 			</select>
 		</form>
@@ -79,10 +77,12 @@
 					bind:value={imgSize}
 					disabled={uiDisabled}
 				>
-					<option value="256x256">256 x 256 (fast and cheap)</option>
+					<option value="256x256"
+						>256 x 256 (fast and reliable)</option
+					>
 					<option value="512x512">512 x 512</option>
 					<option value="1024x1024"
-						>1024 x 1024 (slow and pricey)</option
+						>1024 x 1024 (slow, pricey, brittle)</option
 					>
 				</select>
 			</form>
