@@ -149,12 +149,12 @@
 		{/if}
 	</div>
 	{#if !imgURL}
-		<button on:click={makeImage} disabled={uiDisabled || promptText == ""}
+		<button on:click={makeImage} disabled={uiDisabled || !promptText}
 			>{btnText}</button
 		>
 	{/if}
 	<div class="results">
-		{#if imgURL !== ""}
+		{#if imgURL}
 			<img src={imgURL} alt="Generated AI artwork" />
 			<p>
 				On your phone, tap and hold the image > <b>Save to Photos</b>.
