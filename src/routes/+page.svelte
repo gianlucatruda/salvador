@@ -1,10 +1,25 @@
 <script lang="ts">
+	import { onMount } from "svelte";
+
 	let btnText = "Generate Image";
 	let promptText = "";
 	let modelName = "dall-e-2";
 	let imgSize = "256x256";
 	let uiDisabled = false;
 	let imgURL = "";
+	let lastPrompt: string | null;
+	onMount(() => {
+		if (localStorage.getItem("lastPrompt")) {
+			lastPrompt = localStorage.getItem("lastPrompt");
+		}
+	});
+
+	const loadPreviousPrompt = () => {
+		if (!lastPrompt) {
+			console.error("No last prompt specified.");
+		}
+		promptText = lastPrompt;
+	};
 
 	const makeImage = () => {
 		const query = `${modelName} (${imgSize}): "${promptText}"`;
@@ -15,6 +30,7 @@
 	};
 
 	async function makeRequest() {
+		localStorage.setItem("lastPrompt", promptText);
 		const bodyData = {
 			model: modelName,
 			prompt: promptText,
@@ -88,7 +104,7 @@
 			</form>
 		{:else if modelName == "dall-e-3"}
 			<form>
-				<label for="sizeSelectorD3">Image Size:</label>
+				<label for="sizeSelectorD3">Image Size</label>
 				<select
 					name="sizeSelectorD3"
 					id="sizeSelect"
@@ -116,6 +132,21 @@
 			bind:value={promptText}
 			disabled={uiDisabled}
 		></textarea>
+		{#if lastPrompt && !promptText}
+			<button
+				class="loadPrevButton"
+				on:click={loadPreviousPrompt}
+				disabled={promptText == lastPrompt}>Load previous prompt</button
+			>
+		{:else if !imgURL}
+			<button
+				class="clearPromptButton"
+				on:click={() => {
+					promptText = "";
+				}}
+				disabled={!promptText || uiDisabled}>Clear prompt</button
+			>
+		{/if}
 	</div>
 	{#if !imgURL}
 		<button on:click={makeImage} disabled={uiDisabled || promptText == ""}
@@ -201,9 +232,6 @@
 		width: 90%;
 		margin: 10px 0;
 	}
-	.resetButton {
-		background-color: orange;
-	}
 
 	textarea {
 		height: 100px; /* Better touch area */
@@ -219,6 +247,15 @@
 
 	button:disabled {
 		opacity: 0.5;
+	}
+
+	.resetButton {
+		background-color: orange;
+	}
+
+	.loadPrevButton,
+	.clearPromptButton {
+		background-color: grey;
 	}
 
 	@media (min-width: 640px) {
