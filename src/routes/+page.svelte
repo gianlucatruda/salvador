@@ -42,6 +42,11 @@
 </script>
 
 <main>
+	<link
+		rel="stylesheet"
+		type="text/css"
+		href="//fonts.googleapis.com/css?family=Dancing+Script"
+	/>
 	<h1>Salvador</h1>
 	<p>
 		A bespoke interface to <a href="https://openai.com/index/dall-e-3/"
@@ -49,19 +54,8 @@
 		>.
 	</p>
 	<div class="modelParams">
-		<textarea
-			id="prompt"
-			rows="3"
-			cols="40"
-			wrap="soft"
-			maxlength="999"
-			minlength="10"
-			placeholder="A painting of a melting clock in the style of Dali..."
-			bind:value={promptText}
-			disabled={uiDisabled}
-		></textarea>
 		<form>
-			<label for="modelSelector">Model:</label>
+			<label for="modelSelector">Model</label>
 			<select
 				name="modelSelector"
 				id="modelSelect"
@@ -78,7 +72,7 @@
 		</form>
 		{#if modelName == "dall-e-2"}
 			<form>
-				<label for="sizeSelectorD2">Image Size:</label>
+				<label for="sizeSelectorD2">Image Size</label>
 				<select
 					name="sizeSelectorD2"
 					id="sizeSelect"
@@ -109,8 +103,19 @@
 				</select>
 			</form>
 		{:else}
-			<p>This should never happen...</p>
+			<p>This should never happen. Model name is invalid: {modelName}</p>
 		{/if}
+		<textarea
+			id="prompt"
+			rows="3"
+			cols="40"
+			wrap="soft"
+			maxlength="999"
+			minlength="10"
+			placeholder="A painting of a melting clock in the style of Dali..."
+			bind:value={promptText}
+			disabled={uiDisabled}
+		></textarea>
 	</div>
 	<button on:click={makeImage} disabled={uiDisabled || promptText == ""}
 		>{btnText}</button
@@ -118,13 +123,19 @@
 	<div class="results">
 		{#if imgURL !== ""}
 			<img src={imgURL} alt="result" />
+			<p>On your phone, tap and hold the image > <b>Save to Photos</b>. On your computer, right click the image > <b>Save Image As...</b>.
+
 		{/if}
 	</div>
-	<p>Query: {`${modelName} (${imgSize}): "${promptText}"`}</p>
+	{#if uiDisabled}
+		<p>Query: {`${modelName} (${imgSize}): "${promptText}"`}</p>
+	{/if}
+
 	<footer>
 		<p>
 			Made with <a href="https://kit.svelte.dev/">Svelte</a> and love by
-			<a href="https://gianluca.ai">Gianluca Truda</a>.
+			<a href="https://gianluca.ai">Gianluca Truda</a>. Happy Birthday,
+			mom!
 		</p>
 	</footer>
 </main>
@@ -132,21 +143,80 @@
 <style>
 	main {
 		text-align: center;
-		padding: 0.5em;
-		max-width: 600px;
-		margin: 0 auto;
+		padding: 1em;
+		max-width: 500px;
+		margin: 0 auto; /* Needed for centering */
+		background: white;
+		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+		border-radius: 20px;
 	}
 
 	h1 {
-		color: #ff3e00;
+		/* color: #007aff; iOS blue */
+		color: #000000;
+		text-transform: none;
+		font-size: 5em;
+		font-weight: 900;
+		font-family:
+			Dancing Script,
+			Cambria,
+			Cochin,
+			Georgia,
+			Times,
+			"Times New Roman",
+			serif;
+	}
+
+	p,
+	a,
+	label {
+		font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+			"Helvetica Neue", Arial, sans-serif;
+		color: #666;
+	}
+
+	textarea,
+	select,
+	button {
+		font-size: 18px;
+		padding: 10px;
+		border: 1px solid #ccc;
+		border-radius: 10px;
+		width: 90%;
+		margin: 10px 0;
+	}
+
+	textarea {
+		height: 100px; /* Better touch area */
+	}
+
+	button {
+		background-color: #007aff;
+		color: white;
 		text-transform: uppercase;
-		font-size: 3em;
-		font-weight: 100;
+		letter-spacing: 1px;
+		transition: background-color 0.3s;
+	}
+
+	button:disabled {
+		opacity: 0.5;
 	}
 
 	@media (min-width: 640px) {
 		main {
-			max-width: none;
+			padding: 2em;
+			margin-top: 5vh;
 		}
+
+		h1 {
+			font-size: 4em;
+		}
+	}
+
+	.results img {
+		width: 70%;
+		max-width: 500px;
+		height: auto;
+		border-radius: 10px;
 	}
 </style>
