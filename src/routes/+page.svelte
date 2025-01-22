@@ -56,6 +56,7 @@
 	async function makeRequest() {
 		localStorage.setItem("lastPrompt", promptText);
 		const bodyData = {
+			model: modelName,
 			prompt: promptText,
 			n: 1,
 			size: imgSize,
