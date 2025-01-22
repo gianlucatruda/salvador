@@ -8,9 +8,15 @@
 	let uiDisabled = false;
 	let imgURL = "";
 	let lastPrompt: string | null;
+	let ownApiKey: string = null;
+	let apiKey: string = null;
+
 	onMount(() => {
 		if (localStorage.getItem("lastPrompt")) {
 			lastPrompt = localStorage.getItem("lastPrompt");
+		}
+		if (localStorage.getItem("apiKey")) {
+			apiKey = localStorage.getItem("apiKey") || "";
 		}
 	});
 
@@ -18,7 +24,21 @@
 		if (!lastPrompt) {
 			console.error("No last prompt specified.");
 		}
-		promptText = lastPrompt;
+		promptText = lastPrompt || "";
+	};
+
+	const saveApiKey = () => {
+		if (ownApiKey.length > 0) {
+			apiKey = ownApiKey;
+			localStorage.setItem("apiKey", apiKey);
+			alert("API key saved!");
+		}
+	};
+	const clearApiKey = () => {
+		localStorage.removeItem("apiKey");
+		apiKey = null;
+		ownApiKey = null;
+		alert("API key destroyed!");
 	};
 
 	const makeImage = () => {
@@ -32,23 +52,35 @@
 	async function makeRequest() {
 		localStorage.setItem("lastPrompt", promptText);
 		const bodyData = {
-			model: modelName,
 			prompt: promptText,
 			n: 1,
 			size: imgSize,
-			// TODO quality (for Dalle3)
-			// TODO style (for Dalle3)
 		};
-		const response = await fetch("/api/generate", {
+
+		// If the user has set their own OpenAI API key, straight request
+		let requestURL = "/api/generate";
+		if (apiKey != null && apiKey != "") {
+			requestURL = "https://api.openai.com/v1/images/generations";
+		}
+		console.log("Attempting request to: ", requestURL);
+
+		const response = await fetch(requestURL, {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
+				"Authorization": `Bearer ${apiKey}`,
 			},
 			body: JSON.stringify(bodyData),
 		});
 
 		if (!response.ok) {
 			console.warn(response.status, response.statusText);
+			const errorResult = await response.json();
+			console.error(errorResult.error.message);
+			alert(`Error: ${errorResult.error.message}`);
+			uiDisabled = false;
+			btnText = "Generate Image";
+			return;
 		}
 
 		const result = await response.json();
@@ -56,15 +88,15 @@
 		if (result.error) {
 			console.error(result.error);
 			alert(JSON.stringify(result.error));
-			location.reload();
-
-			btnText = "ERROR";
+			uiDisabled = false;
+			btnText = "Generate Image";
+		} else {
+			imgURL = result.data[0].url;
+			uiDisabled = false;
+			btnText = "Generate Image";
 		}
-
-		imgURL = result.data[0].url;
 	}
 </script>
-
 <main>
 	<link
 		rel="stylesheet"
@@ -90,8 +122,8 @@
 					<option value="dall-e-2">DALL.E 2</option>
 				</optgroup>
 				<optgroup label="Newer, higher-res, slower">
-					<option value="dall-e-3" disabled={true}
-						>DALL.E 3 (coming soon!)</option
+					<option value="dall-e-3" disabled={false}
+						>DALL.E 3 (use your own API key)</option
 					>
 				</optgroup>
 			</select>
@@ -186,6 +218,26 @@
 			>Reset Everything</button
 		>
 	{/if}
+	<div class="api-key-section">
+		<label for="apiKey">Use your own OpenAI API key for unlimited generations</label>
+		<input
+			type="password"
+			id="apiKey"
+			bind:value={ownApiKey}
+			placeholder="sk-..."
+			disabled={uiDisabled}
+		/>
+	{#if !apiKey}
+		<button on:click={saveApiKey} disabled={uiDisabled || !ownApiKey}>
+			Save API Key
+		</button>
+	{/if}
+	{#if apiKey}
+		<button on:click={clearApiKey} disabled={uiDisabled}>
+			Forget API Key
+		</button>
+	{/if}
+	</div>
 
 	<footer>
 		<p>
