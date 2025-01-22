@@ -126,7 +126,7 @@
 					<option value="dall-e-2">DALL.E 2</option>
 				</optgroup>
 				<optgroup label="Newer, higher-res, slower">
-					<option value="dall-e-3" disabled={false}
+					<option value="dall-e-3" disabled={!apiKey}
 						>DALL.E 3 (use your own API key)</option
 					>
 				</optgroup>
@@ -145,7 +145,7 @@
 						>256 x 256 (fast and reliable)</option
 					>
 					<option value="512x512">512 x 512</option>
-					<option value="1024x1024"
+					<option value="1024x1024" disabled={!apiKey}
 						>1024 x 1024 (slow, pricey, brittle)</option
 					>
 				</select>
@@ -223,7 +223,9 @@
 		>
 	{/if}
 	<div class="api-key-section">
-		<label for="apiKey">Use your own OpenAI API key for unlimited generations</label>
+	{#if !apiKey}
+		<p for="apiKey">Add your own OpenAI API key for unlimited generations, higher resolution, and most powerful models. This is securely stored on your device.</p>
+		<label for="apiKey">Your OpenAI API key</label>
 		<input
 			type="password"
 			id="apiKey"
@@ -231,14 +233,13 @@
 			placeholder="sk-..."
 			disabled={uiDisabled}
 		/>
-	{#if !apiKey}
 		<button on:click={saveApiKey} disabled={uiDisabled || !ownApiKey}>
 			Save API Key
 		</button>
 	{/if}
 	{#if apiKey}
 		<button class="resetButton" on:click={clearApiKey} disabled={uiDisabled}>
-			Forget API Key
+			Forget my API key
 		</button>
 	{/if}
 	</div>
