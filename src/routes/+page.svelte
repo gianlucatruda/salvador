@@ -35,10 +35,14 @@
 		}
 	};
 	const clearApiKey = () => {
-		localStorage.removeItem("apiKey");
-		apiKey = null;
-		ownApiKey = null;
-		alert("API key destroyed!");
+
+		// Confirm if sure
+		if (confirm("Are you sure you want to delete your API key? You will need to re-enter it manually.")) {
+			localStorage.removeItem("apiKey");
+			apiKey = null;
+			ownApiKey = null;
+			alert("API key destroyed!");
+		}
 	};
 
 	const makeImage = () => {
@@ -233,7 +237,7 @@
 		</button>
 	{/if}
 	{#if apiKey}
-		<button on:click={clearApiKey} disabled={uiDisabled}>
+		<button class="resetButton" on:click={clearApiKey} disabled={uiDisabled}>
 			Forget API Key
 		</button>
 	{/if}
