@@ -2,6 +2,8 @@
 
 A sleek, user-friendly interface for OpenAI's DALL·E image generation API, built with SvelteKit. Generate AI artwork with simple prompts using either DALL·E 2 or DALL·E 3.
 
+Try it at [salvador-dalle.vercel.app](https://salvador-dalle.vercel.app)
+
 ## Features
 
 - Support for both DALL·E 2 and DALL·E 3 models
