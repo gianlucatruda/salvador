@@ -225,7 +225,7 @@
 	{/if}
 	<div class="api-key-section">
 	{#if !apiKey}
-		<p for="apiKey">Add your own OpenAI API key for unlimited generations, higher resolution, and most powerful models. This is securely stored on your device.</p>
+		<p for="apiKey">Add your own <a href="https://platform.openai.com/api-keys">OpenAI API key</a> for unlimited generations, higher resolution, and most powerful models. This is only stored on your device.</p>
 		<label for="apiKey">Your OpenAI API key</label>
 		<input
 			type="password"
