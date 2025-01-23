@@ -14,7 +14,7 @@ Try it at [salvador-dalle.vercel.app](https://salvador-dalle.vercel.app)
 - (Optional) personal API key integration
 - Mobile-first, responsive design
 
-<center><video src="https://github.com/user-attachments/assets/9f75d219-e3f3-484b-ad80-9a16163ad720"><center>
+<center><video src="https://github.com/user-attachments/assets/9f75d219-e3f3-484b-ad80-9a16163ad720"></video></center>
 
 ## How It Works
 
