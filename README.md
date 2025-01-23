@@ -4,6 +4,8 @@ A sleek, user-friendly interface for OpenAI's DALL·E image generation API, buil
 
 Try it at [salvador-dalle.vercel.app](https://salvador-dalle.vercel.app)
 
+![Screenshots of using the Salvador web app](img/salvador_banner.png) 
+
 ## Features
 
 - Support for both DALL·E 2 and DALL·E 3 models
