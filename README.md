@@ -1,8 +1,9 @@
 # Salvador
 
-A sleek, user-friendly interface for OpenAI's DALL·E image generation API, built with SvelteKit. Generate AI artwork with simple prompts using either DALL·E 2 or DALL·E 3.
+A clean, mobile-first interface for OpenAI’s DALL-E image generator, built with Svelte. Generate visual inspiration with AI using simple prompts and either DALL-E 2 or DALL-E 3.
 
-Try it at [salvador-dalle.vercel.app](https://salvador-dalle.vercel.app)
+- Try it at [salvador-dalle.vercel.app](https://salvador-dalle.vercel.app)
+- Read about how and why I built this (plus challenges and workarounds) in my devlog: [gianluca.ai/salvador](https://gianluca.ai/salvador/)
 
 ![Screenshots of using the Salvador web app](img/salvador_banner.png) 
 
@@ -78,78 +79,4 @@ npm run build
 
 [Gianluca Truda](https://gianluca.ai)
 
----
-
-Here's a technical overview of how the Svelte front-end handles API requests for OpenAI's DALL-E:
-
-### Request Routing Logic
-
-1. **API Key Check**
-
-```typescript
-let requestURL = "/api/generate";
-if (apiKey != null && apiKey != "") {
-  requestURL = "https://api.openai.com/v1/images/generations";
-}
-```
-
-- The application first checks if a user-provided API key exists
-- If no API key exists, requests are routed to the local server endpoint `/api/generate`
-- If an API key exists, requests go directly to OpenAI's endpoint
-
-### Direct OpenAI Request (With User's API Key)
-
-When a user provides their own API key:
-
-1. The key is stored securely in the browser's localStorage
-2. Requests are made directly to `https://api.openai.com/v1/images/generations`
-3. The user's API key is included in the Authorization header
-4. This allows unlimited requests and access to all features
-
-```typescript
-const response = await fetch(requestURL, {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json",
-    Authorization: `Bearer ${apiKey}`,
-  },
-  body: JSON.stringify(bodyData),
-});
-```
-
-### Server-Side Proxy (Without API Key)
-
-When no user API key is provided:
-
-1. Requests go to `/api/generate` endpoint on the Svelte server
-2. The server uses its own API key (stored in environment variables)
-3. The server acts as a proxy, forwarding the request to OpenAI
-4. The response is sent back to the client
-
-```typescript
-// +server.ts
-export async function POST({ request }) {
-  const url = "https://api.openai.com/v1/images/generations";
-  const bodyData = await request.json();
-
-  const response = await fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${OPENAI_API_KEY}`,
-    },
-    body: JSON.stringify(bodyData),
-  });
-
-  return json(await response.json());
-}
-```
-
-### Security Benefits
-
-1. The server's API key (`OPENAI_API_KEY`) is never exposed to the client
-2. User API keys are stored locally and only sent directly to OpenAI
-3. The proxy server provides rate limiting and access control
-4. No sensitive credentials are included in the client-side bundle
-
-This architecture provides a secure and flexible way to handle both authenticated and anonymous users while protecting API credentials.
+--
